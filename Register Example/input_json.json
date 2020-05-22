@@ -1,0 +1,114 @@
+[
+  {
+    "id": 1,
+    "title": "User details",
+    "fields": [
+      {
+        "id": 1,
+        "title": "First name",
+        "apiKey": "first_name",
+        "is_mandatory": true,
+        "input_type": "text"
+      },
+      {
+        "id": 2,
+        "title": "Last name",
+        "apiKey": "last_name",
+        "is_mandatory": true,
+        "input_type": "text"
+      },
+      {
+        "id": 3,
+        "title": "Gender",
+        "apiKey": "gender",
+        "is_mandatory": true,
+        "input_type": "radio",
+        "options": "Male,Female,Other"
+      },
+      {
+        "id": 4,
+        "title": "Mobile number",
+        "apiKey": "mobile_number",
+        "is_mandatory": true,
+        "input_type": "number"
+      },
+      {
+        "id": 5,
+        "title": "Email id",
+        "apiKey": "email",
+        "is_mandatory": true,
+        "input_type": "text"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "title": "Experience details",
+    "fields": [
+      {
+        "id": 6,
+        "title": "Role",
+        "apiKey": "role",
+        "is_mandatory": true,
+        "input_type": "text"
+      },
+      {
+        "id": 7,
+        "title": "Client name",
+        "apiKey": "client_name",
+        "is_mandatory": true,
+        "input_type": "text"
+      },
+      {
+        "id": 8,
+        "title": "Year of experience",
+        "apiKey": "year_experience",
+        "is_mandatory": true,
+        "input_type": "radio",
+        "options": "0-2,2-5,5-10,10+"
+      },
+      {
+        "id": 9,
+        "title": "Technology based skils",
+        "apiKey": "skils",
+        "is_mandatory": true,
+        "input_type": "check",
+        "options": "Swift,Objective C,Kotlin,Java,Hybrid"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "title": "Office details",
+    "fields": [
+      {
+        "id": 10,
+        "title": "Manager name",
+        "apiKey": "manager_name",
+        "is_mandatory": true,
+        "input_type": "text"
+      },
+      {
+        "id": 11,
+        "title": "HR name",
+        "apiKey": "hr_name",
+        "is_mandatory": false,
+        "input_type": "text"
+      },
+      {
+        "id": 12,
+        "title": "Work location",
+        "apiKey": "work_location",
+        "is_mandatory": true,
+        "input_type": "text"
+      },
+      {
+        "id": 13,
+        "title": "Offical mail id",
+        "apiKey": "official_email",
+        "is_mandatory": true,
+        "input_type": "text"
+      }
+    ]
+  }
+]

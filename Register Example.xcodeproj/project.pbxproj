@@ -13,6 +13,11 @@
 		90BF502924669E8C0000EB53 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 90BF502724669E8C0000EB53 /* Main.storyboard */; };
 		90BF502B24669E8D0000EB53 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 90BF502A24669E8D0000EB53 /* Assets.xcassets */; };
 		90BF502E24669E8D0000EB53 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 90BF502C24669E8D0000EB53 /* LaunchScreen.storyboard */; };
+		90BF503624669F640000EB53 /* input_json.json in Resources */ = {isa = PBXBuildFile; fileRef = 90BF503524669F640000EB53 /* input_json.json */; };
+		90BF50382466A2460000EB53 /* APIValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90BF50372466A2460000EB53 /* APIValues.swift */; };
+		90BF503A2466AA050000EB53 /* ViewController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90BF50392466AA050000EB53 /* ViewController+Extension.swift */; };
+		90BF503C2466AAE20000EB53 /* LocalizedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90BF503B2466AAE20000EB53 /* LocalizedString.swift */; };
+		90BF503E2466BCC50000EB53 /* HScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90BF503D2466BCC50000EB53 /* HScrollView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +29,11 @@
 		90BF502A24669E8D0000EB53 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		90BF502D24669E8D0000EB53 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		90BF502F24669E8D0000EB53 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		90BF503524669F640000EB53 /* input_json.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = input_json.json; sourceTree = "<group>"; };
+		90BF50372466A2460000EB53 /* APIValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIValues.swift; sourceTree = "<group>"; };
+		90BF50392466AA050000EB53 /* ViewController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+Extension.swift"; sourceTree = "<group>"; };
+		90BF503B2466AAE20000EB53 /* LocalizedString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizedString.swift; sourceTree = "<group>"; };
+		90BF503D2466BCC50000EB53 /* HScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HScrollView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +73,11 @@
 				90BF502A24669E8D0000EB53 /* Assets.xcassets */,
 				90BF502C24669E8D0000EB53 /* LaunchScreen.storyboard */,
 				90BF502F24669E8D0000EB53 /* Info.plist */,
+				90BF503524669F640000EB53 /* input_json.json */,
+				90BF50372466A2460000EB53 /* APIValues.swift */,
+				90BF50392466AA050000EB53 /* ViewController+Extension.swift */,
+				90BF503B2466AAE20000EB53 /* LocalizedString.swift */,
+				90BF503D2466BCC50000EB53 /* HScrollView.swift */,
 			);
 			path = "Register Example";
 			sourceTree = "<group>";
@@ -93,6 +108,7 @@
 		90BF501624669E8C0000EB53 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				CLASSPREFIX = "";
 				LastSwiftUpdateCheck = 1140;
 				LastUpgradeCheck = 1140;
 				ORGANIZATIONNAME = example;
@@ -125,6 +141,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				90BF503624669F640000EB53 /* input_json.json in Resources */,
 				90BF502E24669E8D0000EB53 /* LaunchScreen.storyboard in Resources */,
 				90BF502B24669E8D0000EB53 /* Assets.xcassets in Resources */,
 				90BF502924669E8C0000EB53 /* Main.storyboard in Resources */,
@@ -138,8 +155,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				90BF50382466A2460000EB53 /* APIValues.swift in Sources */,
 				90BF502624669E8C0000EB53 /* ViewController.swift in Sources */,
+				90BF503E2466BCC50000EB53 /* HScrollView.swift in Sources */,
+				90BF503C2466AAE20000EB53 /* LocalizedString.swift in Sources */,
 				90BF502224669E8C0000EB53 /* AppDelegate.swift in Sources */,
+				90BF503A2466AA050000EB53 /* ViewController+Extension.swift in Sources */,
 				90BF502424669E8C0000EB53 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -286,6 +307,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = "Register Example/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -303,6 +325,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = "Register Example/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
