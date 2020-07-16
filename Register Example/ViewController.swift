@@ -31,7 +31,9 @@ class ViewController: UIViewController {
     let titleLabel = UILabel.lableInit(title: Strings.Common.appName)
     
     let nextButton = UIButton.buttonInit(title: Strings.Home.next, bgColor: UIColor.init(red: 33/255, green: 170/255, blue: 71/255, alpha: 1))
+    let backButton = UIButton.buttonInit(title: Strings.Home.back, bgColor: UIColor.init(red: 33/255, green: 170/255, blue: 71/255, alpha: 1))
     
+    lazy var pageDetailsArray: [APIValueElement] = []
     lazy var responseToAPIDict: [String: Any] = [:]
     
     var currentPage = 0
@@ -61,10 +63,14 @@ class ViewController: UIViewController {
         titleLabel.layer.addSublayer(bottomLayer)
         
         nextButton.addTarget(self, action: #selector(nextButtonAction(_:)), for: .touchUpInside)
+        backButton.addTarget(self, action: #selector(backButtonAction(_:)), for: .touchUpInside)
+        backButton.isEnabled = false
+
         vScrollView.setupUI(field: jsonInput![currentPage])
         
         view.addSubview(titleLabel)
         view.addSubview(vScrollView)
+        view.addSubview(backButton)
         view.addSubview(nextButton)
         
         uiConstraintsSetup()
@@ -83,7 +89,12 @@ class ViewController: UIViewController {
             vScrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             vScrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             vScrollView.widthAnchor.constraint(equalTo: view.widthAnchor),
-            nextButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            backButton.heightAnchor.constraint(equalTo: nextButton.heightAnchor),
+            backButton.bottomAnchor.constraint(equalTo: nextButton.bottomAnchor),
+            backButton.widthAnchor.constraint(equalTo: nextButton.widthAnchor),
+            backButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: defaultPadding),
+            backButton.trailingAnchor.constraint(lessThanOrEqualTo: nextButton.leadingAnchor, constant: -defaultPadding),
+            nextButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -defaultPadding),
             nextButton.heightAnchor.constraint(equalToConstant: buttonHeight),
             nextButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -defaultPadding),
             nextButton.topAnchor.constraint(equalTo: vScrollView.bottomAnchor, constant: defaultPadding),
@@ -98,30 +109,77 @@ extension ViewController {
     //Mark: Button Action
     
     @objc func nextButtonAction(_ sender: UIButton) {
-        // Invoke a method in ScrollView class
-        // This method validate all the current page field and return alert message as Dict
-        // If all fields are valided and return valid API dict details
-        let currentResponseDict = vScrollView.nextButtonTapped()
+        let currentPageValue = vScrollView.navigationButtonTapped()
         
-        // If response dict containts only one key and key is eqaul to "error" then show alert message
-        // Else current page doesn't have any issue good to go for next page or registration success menssage
-        if currentResponseDict.keys.count == 1,
-            let haveValue = currentResponseDict[Strings.InputJSONError.error] as? String {
-            showAlert(message: haveValue)
-        } else {
-            // Merging previous response page dict key (if available) to new dict key
-            responseToAPIDict = responseToAPIDict.merging(currentResponseDict, uniquingKeysWith: { (_, last) in last })
-            
-            if let haveJsonInput = jsonInput {
-                // If currentPage reach last count for JSON then show success message for registration
-                // Else increase currentPage value and recreate UI based on that JSON value
-                if currentPage >= (haveJsonInput.count-1) {
-                    showAlert(message: Strings.Home.successRegistration)
+        guard let haveSccuessDetails = currentPageValue.response else {
+            let haveValue = currentPageValue.error[Strings.InputJSONError.message] as? String
+            showAlert(message: (haveValue ?? Strings.Alert.somethingWentWrong))
+            return
+        }
+        
+        updateUserDetailsArray(with: haveSccuessDetails)
+        
+        if let haveJsonInput = jsonInput {
+            if currentPage >= (haveJsonInput.count-1) {
+                print(createResponseDict())
+                showAlert(message: Strings.Home.successRegistration)
+            } else {
+                backButton.isEnabled = true
+                
+                let fiedlValue: APIValueElement
+                
+                if currentPage+1 < pageDetailsArray.count {
+                    fiedlValue = pageDetailsArray[currentPage+1]
                 } else {
-                    currentPage+=1
-                    vScrollView.setupUI(field: haveJsonInput[currentPage])
+                    fiedlValue = haveJsonInput[currentPage+1]
+                }
+                
+                currentPage+=1
+                vScrollView.setupUI(field: fiedlValue)
+                
+                if currentPage >= (haveJsonInput.count-1) {
+                    nextButton.setTitle(Strings.Home.submit, for: .normal)
                 }
             }
         }
     }
+    
+    private func updateUserDetailsArray(with sccuessDetails: APIValueElement) {
+        if currentPage == pageDetailsArray.count {
+            pageDetailsArray.append(sccuessDetails)
+        } else {
+            pageDetailsArray[currentPage] = sccuessDetails
+        }
+    }
+    
+    private func createResponseDict() -> [String: Any] {
+        var returnArray: [String: Any] = [:]
+        
+        for loopArray in pageDetailsArray {
+            for loopValue in loopArray.fields {
+                if let haveUserInput = loopValue.userInput {
+                    returnArray[loopValue.apiKey] = haveUserInput
+                }
+            }
+        }
+        
+        return returnArray
+    }
+    
+    @objc func backButtonAction(_ sender: UIButton) {
+        let currentPageValue = vScrollView.navigationButtonTapped(needAlert: false)
+        
+        if let haveSuccessDetails = currentPageValue.response {
+            updateUserDetailsArray(with: haveSuccessDetails)
+        }
+        nextButton.setTitle(Strings.Home.next, for: .normal)
+        currentPage-=1
+        
+        if currentPage == 0 {
+            backButton.isEnabled = false
+        }
+        
+        vScrollView.setupUI(field: pageDetailsArray[currentPage])
+    }
+    
 }

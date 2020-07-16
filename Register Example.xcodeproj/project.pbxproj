@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9000097B24C079350058380B /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9000097A24C079340058380B /* String+Extension.swift */; };
 		90BF502224669E8C0000EB53 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90BF502124669E8C0000EB53 /* AppDelegate.swift */; };
 		90BF502424669E8C0000EB53 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90BF502324669E8C0000EB53 /* SceneDelegate.swift */; };
 		90BF502624669E8C0000EB53 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90BF502524669E8C0000EB53 /* ViewController.swift */; };
@@ -21,6 +22,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		9000097A24C079340058380B /* String+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
 		90BF501E24669E8C0000EB53 /* Register Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Register Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		90BF502124669E8C0000EB53 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		90BF502324669E8C0000EB53 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -78,6 +80,7 @@
 				90BF50392466AA050000EB53 /* ViewController+Extension.swift */,
 				90BF503B2466AAE20000EB53 /* LocalizedString.swift */,
 				90BF503D2466BCC50000EB53 /* HScrollView.swift */,
+				9000097A24C079340058380B /* String+Extension.swift */,
 			);
 			path = "Register Example";
 			sourceTree = "<group>";
@@ -155,6 +158,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9000097B24C079350058380B /* String+Extension.swift in Sources */,
 				90BF50382466A2460000EB53 /* APIValues.swift in Sources */,
 				90BF502624669E8C0000EB53 /* ViewController.swift in Sources */,
 				90BF503E2466BCC50000EB53 /* HScrollView.swift in Sources */,

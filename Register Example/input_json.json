@@ -8,14 +8,18 @@
         "title": "First name",
         "apiKey": "first_name",
         "is_mandatory": true,
-        "input_type": "text"
+        "input_type": "text",
+        "regex": "^[A-Za-z ]{3,16}$",
+        "regex_alert": "alphabet should be minimum 3 char and maximum 16"
       },
       {
         "id": 2,
         "title": "Last name",
         "apiKey": "last_name",
         "is_mandatory": true,
-        "input_type": "text"
+        "input_type": "text",
+        "regex": "^[A-Za-z ]{3,16}$",
+        "regex_alert": "alphabet should be minimum 3 char and maximum 16"
       },
       {
         "id": 3,
@@ -30,14 +34,17 @@
         "title": "Mobile number",
         "apiKey": "mobile_number",
         "is_mandatory": true,
-        "input_type": "number"
+        "input_type": "number",
+        "regex": "[0-9]{10}",
+        "regex_alert": "should be in numeric 10 char"
       },
       {
         "id": 5,
         "title": "Email id",
         "apiKey": "email",
         "is_mandatory": true,
-        "input_type": "text"
+        "input_type": "text",
+        "regex": "^[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}$"
       }
     ]
   },
@@ -86,14 +93,18 @@
         "title": "Manager name",
         "apiKey": "manager_name",
         "is_mandatory": true,
-        "input_type": "text"
+        "input_type": "text",
+        "regex": "^[A-Za-z ]{3,30}$",
+        "regex_alert": "alphabet should be minimum 3 char and maximum 30"
       },
       {
         "id": 11,
         "title": "HR name",
         "apiKey": "hr_name",
         "is_mandatory": false,
-        "input_type": "text"
+        "input_type": "text",
+        "regex": "^[A-Za-z ]{3,30}$",
+        "regex_alert": "alphabet should be minimum 3 char and maximum 30"
       },
       {
         "id": 12,
@@ -104,10 +115,12 @@
       },
       {
         "id": 13,
-        "title": "Offical mail id",
-        "apiKey": "official_email",
+        "title": "Set password",
+        "apiKey": "user_password",
         "is_mandatory": true,
-        "input_type": "text"
+        "input_type": "password",
+        "regex": "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[$@$!%*?&#])[A-Za-z\\d$@$!%*?&#]{8,30}",
+        "regex_alert": "minimum 8 and Maximum 30 characters at least 1 Uppercase Alphabet, 1 Lowercase Alphabet, 1 Number and 1 Special Character"
       }
     ]
   }

@@ -44,7 +44,6 @@ final class HScrollView: UIScrollView {
     
     private func createUI() {
         guard let haveArray = fieldsArray else { return }
-        let haveFieldArray = haveArray.fields
         
         titleLabel.text = haveArray.title
         titleLabel.textAlignment = .center
@@ -58,19 +57,21 @@ final class HScrollView: UIScrollView {
         var hString = "H:|[titleLabel(scrollView)]"
         var vString = "V:|-defaultPadding-[titleLabel]-defaultPadding-"
         
-        for (index, loopValue) in haveFieldArray.enumerated() {
+        for (index, loopValue) in haveArray.fields.enumerated() {
             let currentView: UIView
             let titleString = "\(loopValue.title)\(loopValue.isMandatory ? "*":"")"
             
-            switch loopValue.inputType {
-            case .check:
-                currentView = radioAndCheckView(with: titleString, buttonArray: loopValue.options?.split(separator: ",").map { String($0) }, row: index, isCheckBox: true)
-            case .radio:
-                currentView = radioAndCheckView(with: titleString, buttonArray: loopValue.options?.split(separator: ",").map { String($0) }, row: index, isCheckBox: false)
-            case .number:
-                currentView = textFieldView(with: titleString, isNumber: true, row: index)
-            default:
-                currentView = textFieldView(with: titleString, isNumber: false, row: index)
+            if loopValue.inputType == .check || loopValue.inputType == .radio {
+                currentView = radioAndCheckView(with: titleString,
+                                                buttonArray: loopValue.options?.split(separator: ",").map { String($0) },
+                                                row: index,
+                                                isCheckBox: loopValue.inputType == .check ? true:false,
+                                                userValueArray: loopValue.userInput != nil ? loopValue.userInput?.split(separator: ",").map { String($0) }:nil)
+            } else {
+                currentView = textFieldView(with: titleString,
+                                            textFieldType: loopValue.inputType,
+                                            row: index,
+                                            userValue: loopValue.userInput)
             }
             
             addSubview(currentView)
@@ -106,20 +107,24 @@ final class HScrollView: UIScrollView {
         for loopValue in self.subviews {
             loopValue.removeFromSuperview()
         }
+        
+        radioButtonSelectedIndex.removeAll()
+        checkButtonSelectedIndex.removeAll()
     }
     
-    func nextButtonTapped() -> [String: Any] {
+    func navigationButtonTapped(needAlert: Bool = true) -> (error: [String: Any], response: APIValueElement?) {
         keyboardDone()
-        return createResponseDict()
+        return createResponseDict(needAlert: needAlert)
     }
     
-    func createResponseDict() -> [String: Any] {
-        guard let haveFieldArray = fieldsArray else { return [:] }
-        var returnArray: [String: Any] = [:]
+    private func createResponseDict(needAlert: Bool) -> (error: [String: Any], response: APIValueElement?) {
+        guard var haveFieldArray = fieldsArray else { return ([:], nil) }
         
         for (index, loopValue) in haveFieldArray.fields.enumerated() {
             switch loopValue.inputType {
             case .check:
+                let userValue: String?
+                
                 if let haveOptionArray = loopValue.options?.split(separator: ",").map({ String($0) }),
                     let isCheckSelected = checkButtonSelectedIndex[index],
                     isCheckSelected.count > 0 {
@@ -133,43 +138,60 @@ final class HScrollView: UIScrollView {
                         }
                     }
                     
-                    returnArray[loopValue.apiKey] = arrayString
+                    userValue = arrayString
                 } else {
-                    if loopValue.isMandatory {
-                        
-                    returnArray.removeAll()
-                    returnArray[Strings.InputJSONError.error] = "\(loopValue.title) \(Strings.InputJSONError.checkNotSelected)"
-                    return returnArray
+                    if loopValue.isMandatory, needAlert {
+                        return ([Strings.InputJSONError.message: "\(loopValue.title) \(Strings.InputJSONError.checkNotSelected)"], nil)
+                    } else {
+                        userValue = nil
                     }
                 }
+                
+                haveFieldArray.fields[index].userInput = userValue
             case .radio:
+                let userValue: String?
+                
                 if let haveOptionArray = loopValue.options?.split(separator: ",").map({ String($0) }),
                     let isRadioSelected = radioButtonSelectedIndex[index] {
-                    returnArray[loopValue.apiKey] = haveOptionArray[isRadioSelected]
+                    userValue = haveOptionArray[isRadioSelected]
                 } else {
-                    if loopValue.isMandatory {
-                        
-                    returnArray.removeAll()
-                    returnArray[Strings.InputJSONError.error] = "\(loopValue.title) \(Strings.InputJSONError.radioNotSelected)"
-                    return returnArray
+                    if loopValue.isMandatory, needAlert {
+                        return ([Strings.InputJSONError.message: "\(loopValue.title) \(Strings.InputJSONError.radioNotSelected)"], nil)
+                    } else {
+                        userValue = nil
                     }
                 }
-            case .text, .number:
+                
+                haveFieldArray.fields[index].userInput = userValue
+            case .text, .number, .password:
+                let userValue: String?
+                
                 if let haveTextField = viewWithTag(HScrollView.KTextFieldTag+index) as? UITextField,
                     let haveText = haveTextField.text, haveText.count > 0 {
-                    returnArray[loopValue.apiKey] = haveText
+                    if let haveRegx = loopValue.regex {
+                        if haveText.isValidExpression(haveRegx) {
+                            userValue = haveText
+                        } else if needAlert {
+                            return ([Strings.InputJSONError.message: "\(loopValue.title) \(loopValue.regexAlert ?? Strings.InputJSONError.notValidText)"], nil)
+                        } else {
+                            userValue = nil
+                        }
+                    } else {
+                        userValue = haveText
+                    }
                 } else {
-                    if loopValue.isMandatory {
-                        
-                    returnArray.removeAll()
-                    returnArray[Strings.InputJSONError.error] = "\(loopValue.title) \(Strings.InputJSONError.textNotEntered)"
-                    return returnArray
+                    if loopValue.isMandatory, needAlert {
+                        return ([Strings.InputJSONError.message: "\(loopValue.title) \(Strings.InputJSONError.textNotEntered)"], nil)
+                    } else {
+                        userValue = nil
                     }
                 }
+                
+                haveFieldArray.fields[index].userInput = userValue
             }
         }
         
-        return returnArray
+        return ([Strings.InputJSONError.message: Strings.InputJSONError.success], haveFieldArray)
     }
     
 }
@@ -177,16 +199,31 @@ final class HScrollView: UIScrollView {
 fileprivate extension HScrollView {
     //Mark: UI Creation
     
-    func textFieldView(with title: String, isNumber: Bool, row: Int) -> UIView {
+    func textFieldView(with title: String,
+                       textFieldType: InputType,
+                       row: Int,
+                       userValue: String?) -> UIView {
         let bgView = UIView.viewInit()
         let titleLabel = UILabel.lableInit(title: title)
         let textField = UITextField.textFieldInit(placeHolder: title)
         
         titleLabel.adjustsFontSizeToFitWidth = true
-        textField.keyboardType = isNumber ? .phonePad:.default
+        textField.keyboardType = .default
         textField.inputAccessoryView = UIToolbar.doneButton(target: self, action: #selector(keyboardDone))
         textField.delegate = self
         textField.tag = HScrollView.KTextFieldTag+row
+        textField.text = userValue
+        
+        if textFieldType == .number {
+            textField.keyboardType = .phonePad
+        } else if textFieldType == .password {
+            textField.isSecureTextEntry = true
+            if #available(iOS 12.0, *) {
+                textField.textContentType = .oneTimeCode
+            } else {
+                // Fallback on earlier versions
+            }
+        }
         
         bgView.addSubview(titleLabel)
         bgView.addSubview(textField)
@@ -210,7 +247,11 @@ fileprivate extension HScrollView {
         return bgView
     }
     
-    func radioAndCheckView(with title: String, buttonArray: [String]?, row: Int, isCheckBox: Bool) -> UIView {
+    func radioAndCheckView(with title: String,
+                           buttonArray: [String]?,
+                           row: Int,
+                           isCheckBox: Bool,
+                           userValueArray: [String]?) -> UIView {
         let bgView = UIView.viewInit()
         let titleLabel = UILabel.lableInit(title: title)
         let radioBGView = UITextField.viewInit()
@@ -245,6 +286,18 @@ fileprivate extension HScrollView {
                 let bgControl = UIControl.controlInit()
                 let imageView = UIImageView.imageViewInit(imageName: "empty_circle")
                 let radioTitle = UILabel.lableInit(title: loopValue)
+                
+                if let haveUserValue = userValueArray {
+                    if haveUserValue.contains(loopValue) {
+                        if isCheckBox {
+                            updateCheckSelectedWith(radioIndex: index, rowIndex: row)
+                            imageView.image = UIImage(named: "check")
+                        } else {
+                            radioButtonSelectedIndex[row] = index
+                            imageView.image = UIImage(named: "checked_circle")
+                        }
+                    }
+                }
                 
                 bgControl.addTarget(self,
                                     action: isCheckBox ? #selector(checkControlAction(_:)):#selector(radioControlAction(_:)),
@@ -336,19 +389,22 @@ extension HScrollView {
                 checkButtonSelectedIndex[rowIndex]?.remove(at: subIndex)
             } else {
                 haveImageView.image = UIImage(named: "check")
-                
-                let appendArray: [Int]
-                
-                if var haveRow = checkButtonSelectedIndex[rowIndex] {
-                    haveRow.append(radioIndex)
-                    appendArray = haveRow
-                } else {
-                    appendArray = [radioIndex]
-                }
-                
-                checkButtonSelectedIndex[rowIndex] = appendArray
+                updateCheckSelectedWith(radioIndex: radioIndex, rowIndex: rowIndex)
             }
         }
+    }
+    
+    fileprivate func updateCheckSelectedWith(radioIndex: Int, rowIndex: Int) {
+        let appendArray: [Int]
+        
+        if var haveRow = checkButtonSelectedIndex[rowIndex] {
+            haveRow.append(radioIndex)
+            appendArray = haveRow
+        } else {
+            appendArray = [radioIndex]
+        }
+        
+        checkButtonSelectedIndex[rowIndex] = appendArray
     }
     
     private func retriveImageView(from control: UIControl) -> UIImageView? {

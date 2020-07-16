@@ -8,51 +8,11 @@
 
 import Foundation
 
-//// MARK: - APIValue
-//struct APIValues: Codable {
-//    let id: Int
-//    let title: String
-//    let fields: [Field]
-//}
-//
-//// MARK: - Field
-//struct Field: Codable {
-//    let id: Int
-//    let title, apiKey: String
-//    let isMandatory: Bool
-//    let inputType: String
-//    let options: String?
-//
-//    enum CodingKeys: String, CodingKey {
-//        case id, title, apiKey
-//        case isMandatory = "is_mandatory"
-//        case inputType = "input_type"
-//        case options
-//    }
-//
-//    enum KeyboardType {
-//        case text, number, radio, checkBox
-//    }
-//
-//    func keyboardType() -> KeyboardType {
-//        switch inputType {
-//        case "number":
-//            return .number
-//        case "radio":
-//            return .radio
-//        case "checkBox":
-//            return .checkBox
-//        default:
-//            return .text
-//        }
-//    }
-//}
-
 // MARK: - APIValueElement
 struct APIValueElement: Codable {
     let id: Int
     let title: String
-    let fields: [Field]
+    var fields: [Field]
 }
 
 // MARK: - Field
@@ -61,13 +21,14 @@ struct Field: Codable {
     let title, apiKey: String
     let isMandatory: Bool
     let inputType: InputType
-    let options: String?
+    let options, regex, regexAlert: String?
+    var userInput: String? = nil
 
     enum CodingKeys: String, CodingKey {
-        case id, title, apiKey
+        case id, title, apiKey, regex, options
         case isMandatory = "is_mandatory"
         case inputType = "input_type"
-        case options
+        case regexAlert = "regex_alert"
     }
 }
 
@@ -76,6 +37,7 @@ enum InputType: String, Codable {
     case radio = "radio"
     case text = "text"
     case check = "check"
+    case password = "password"
 }
 
 typealias APIValue = [APIValueElement]
